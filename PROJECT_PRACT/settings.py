@@ -1,17 +1,29 @@
 # ==========================================
-# 1. ЭКРАН
+# 1. ЭКРАН (Battle City: 208×208, тайлы 16×16)
 # ==========================================
 
-TILE_SIZE = 32
-COLS = 24
-ROWS = 20
+import os
 
-UI_HEIGHT = 60
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
-WIDTH = COLS * TILE_SIZE
-HEIGHT = ROWS * TILE_SIZE + UI_HEIGHT
+
+def asset_path(filename):
+    return os.path.join(BASE_DIR, filename)
+
+
+TILE_SIZE = 16
+COLS = 13
+ROWS = 13
+
+UI_HEIGHT = 16
+ARENA_Y = UI_HEIGHT
+
+WIDTH = COLS * TILE_SIZE          # 208
+ARENA_HEIGHT = ROWS * TILE_SIZE     # 208
+HEIGHT = UI_HEIGHT + ARENA_HEIGHT   # 224
 
 FPS = 60
+GRID_MOVE_DELAY = 10
 
 
 # ==========================================
@@ -48,41 +60,42 @@ HEART_COLOR = (255, 50, 70)
 # ==========================================
 
 PLAYER_MAX_HP = 3
-PLAYER_SPEED = 4
+PLAYER_SPEED = 2
 PLAYER_SHOOT_COOLDOWN = 20
 PLAYER_I_FRAMES = 90
 
 ENEMY_HP = 2
-ENEMY_SPEED = 2
+ENEMY_SPEED = 1.5
 ENEMY_SHOOT_COOLDOWN = 60
 ENEMY_FIRE_CHANCE = 0.02
 
-BOSS_HP = 30
-BOSS_SPEED = 1.5
+BOSS_HP = 20
+BOSS_SPEED = 1.2
 BOSS_SHOOT_COOLDOWN = 35
 BOSS_FIRE_CHANCE = 0.06
 
-BULLET_SPEED = 10
-BULLET_RADIUS_PLAYER = 4
-BULLET_RADIUS_ENEMY = 5
+BULLET_SPEED = 5
+BULLET_RADIUS_PLAYER = 2
+BULLET_RADIUS_ENEMY = 2
 
-BUSH_SLOWDOWN_MULTIPLIER = 0.3
+BUSH_SLOWDOWN_MULTIPLIER = 0.4
+
+TANK_SIZE = TILE_SIZE
+BOSS_SIZE = TILE_SIZE * 2
+
+# Sprite faces UP at 0°; pygame.transform.rotate uses CCW degrees
+DIRECTION_ANGLES = {
+    "up": 0,
+    "down": 180,
+    "left": 90,
+    "right": -90,
+}
+
+DEFAULT_WINDOW_SCALE = 2
 
 
 # ==========================================
-# 4. ЭКОНОМИКА
-# ==========================================
-
-COIN_DROP_CHANCE = 0.5
-BOSS_COIN_DROP = 15
-
-HEAL_COST = 5
-
-MAX_COINS = 999
-
-
-# ==========================================
-# 5. КАРТА
+# 4. КАРТА
 # ==========================================
 
 TILE_EMPTY = 0
@@ -94,7 +107,7 @@ TILE_BUSH = 6
 
 
 # ==========================================
-# 6. СОСТОЯНИЯ ИГРЫ
+# 5. СОСТОЯНИЯ ИГРЫ
 # ==========================================
 
 STATE_MENU = "MENU"
@@ -105,7 +118,7 @@ STATE_CONFIRM_EXIT = "CONFIRM_EXIT"
 
 
 # ==========================================
-# 7. НАСТРОЙКИ ИГРЫ
+# 6. НАСТРОЙКИ ИГРЫ
 # ==========================================
 
 GAME_SETTINGS = {
@@ -116,29 +129,26 @@ GAME_SETTINGS = {
 
 
 # ==========================================
-# 8. НАСТРОЙКИ СЛОЖНОСТИ
+# 7. НАСТРОЙКИ СЛОЖНОСТИ
 # ==========================================
 
 DIFFICULTY_SETTINGS = {
     "ЛЕГКАЯ": {
         "player_hp": 4,
-        "enemy_speed": 1.6,
+        "enemy_speed": 1.2,
         "enemy_fire_chance": 0.015,
-        "boss_hp": 24,
-        "heal_cost": 3,
+        "boss_hp": 16,
     },
     "СРЕДНЯЯ": {
         "player_hp": 3,
-        "enemy_speed": 2,
+        "enemy_speed": 1.5,
         "enemy_fire_chance": 0.02,
-        "boss_hp": 30,
-        "heal_cost": 5,
+        "boss_hp": 20,
     },
     "СЛОЖНАЯ": {
         "player_hp": 2,
-        "enemy_speed": 2.6,
+        "enemy_speed": 2,
         "enemy_fire_chance": 0.03,
-        "boss_hp": 40,
-        "heal_cost": 8,
+        "boss_hp": 28,
     }
 }
