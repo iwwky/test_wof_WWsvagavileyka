@@ -6,18 +6,18 @@ _bullet_sprites = {}
 
 
 def muzzle_position(x, y, size, direction):
-    """Spawn point at the gun barrel (mirrored from the old rear offset)."""
+    """Spawn at barrel tip (sprite base orientation faces down)."""
     cx = x + size // 2
     cy = y + size // 2
     offset = size // 2 + 2
 
-    if direction == "up":
-        return cx, cy + offset
     if direction == "down":
+        return cx, cy + offset
+    if direction == "up":
         return cx, cy - offset
     if direction == "left":
-        return cx + offset, cy
-    return cx - offset, cy
+        return cx - offset, cy
+    return cx + offset, cy
 
 
 def _load_bullet_sprite(is_player):

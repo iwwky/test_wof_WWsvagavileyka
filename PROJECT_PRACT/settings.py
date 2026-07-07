@@ -23,7 +23,7 @@ ARENA_HEIGHT = ROWS * TILE_SIZE     # 208
 HEIGHT = UI_HEIGHT + ARENA_HEIGHT   # 224
 
 FPS = 60
-GRID_MOVE_DELAY = 10
+GLIDE_PIXELS_PER_FRAME = 2
 
 
 # ==========================================
@@ -83,12 +83,12 @@ BUSH_SLOWDOWN_MULTIPLIER = 0.4
 TANK_SIZE = TILE_SIZE
 BOSS_SIZE = TILE_SIZE * 2
 
-# Sprite faces UP at 0°; pygame.transform.rotate uses CCW degrees
+# Sprite barrel faces DOWN at 0°; pygame.transform.rotate is CCW
 DIRECTION_ANGLES = {
-    "up": 0,
-    "down": 180,
-    "left": 90,
-    "right": -90,
+    "down": 0,
+    "up": 180,
+    "left": -90,
+    "right": 90,
 }
 
 DEFAULT_WINDOW_SCALE = 2

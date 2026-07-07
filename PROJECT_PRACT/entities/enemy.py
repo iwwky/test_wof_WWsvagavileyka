@@ -4,19 +4,18 @@ import random
 from settings import *
 from entities.bullet import Bullet
 from core.sprites import blit_tank
+from core.grid_movement import GridGlideMovement
 
 
-class Enemy:
+class Enemy(GridGlideMovement):
     def __init__(self, x, y, is_boss=False):
-        self.x = x
-        self.y = y
+        self._init_grid_glide(x, y)
         self.is_boss = is_boss
 
         self.size = BOSS_SIZE if is_boss else TANK_SIZE
         self.hp = BOSS_HP if is_boss else ENEMY_HP
-        self.base_speed = BOSS_SPEED if is_boss else ENEMY_SPEED
 
-        self.dir = "up"
+        self.dir = "down"
         self.cooldown = 0
         self.move_timer = 0
 
@@ -32,50 +31,12 @@ class Enemy:
         except FileNotFoundError:
             print(f"ВНИМАНИЕ: Спрайт '{sprite_file}' не найден. Включена заглушка.")
 
-    def move(self, dx, dy, dungeon, player, enemies):
-        collided = False
-
-        if dx != 0:
-            new_x = self.x + dx
-            if not dungeon.check_collision(new_x, self.y, self.size):
-                can_move = True
-                my_rect = pygame.Rect(new_x, self.y, self.size, self.size)
-                if my_rect.colliderect(pygame.Rect(player.x, player.y, player.size, player.size)):
-                    can_move = False
-                if can_move:
-                    for other in enemies:
-                        if other is not self:
-                            if my_rect.colliderect(pygame.Rect(other.x, other.y, other.size, other.size)):
-                                can_move = False
-                                break
-                if can_move:
-                    self.x = new_x
-                else:
-                    collided = True
-            else:
-                collided = True
-
-        if dy != 0:
-            new_y = self.y + dy
-            if not dungeon.check_collision(self.x, new_y, self.size):
-                can_move = True
-                my_rect = pygame.Rect(self.x, new_y, self.size, self.size)
-                if my_rect.colliderect(pygame.Rect(player.x, player.y, player.size, player.size)):
-                    can_move = False
-                if can_move:
-                    for other in enemies:
-                        if other is not self:
-                            if my_rect.colliderect(pygame.Rect(other.x, other.y, other.size, other.size)):
-                                can_move = False
-                                break
-                if can_move:
-                    self.y = new_y
-                else:
-                    collided = True
-            else:
-                collided = True
-
-        return collided
+    def _movement_blockers(self, player, enemies):
+        blockers = [player]
+        for other in enemies:
+            if other is not self:
+                blockers.append(other)
+        return blockers
 
     def update(self, dungeon, bullets, player, enemies):
         if self.cooldown > 0:
@@ -83,27 +44,18 @@ class Enemy:
         if self.move_timer > 0:
             self.move_timer -= 1
 
-        if self.move_timer <= 0:
-            self.dir = random.choice(["up", "down", "left", "right"])
-            self.move_timer = random.randint(60, 120) if self.is_boss else random.randint(30, 90)
+        self._update_glide()
 
-        actual_speed = self.base_speed
-        if dungeon.is_in_bush(self.x, self.y, self.size):
-            actual_speed *= BUSH_SLOWDOWN_MULTIPLIER
+        if not self.is_gliding:
+            if self.move_timer <= 0:
+                self.dir = random.choice(["up", "down", "left", "right"])
+                self.move_timer = random.randint(60, 120) if self.is_boss else random.randint(30, 90)
 
-        dx, dy = 0, 0
-        if self.dir == "up":
-            dy = -actual_speed
-        elif self.dir == "down":
-            dy = actual_speed
-        elif self.dir == "left":
-            dx = -actual_speed
-        elif self.dir == "right":
-            dx = actual_speed
-
-        if self.move(dx, dy, dungeon, player, enemies):
-            self.dir = random.choice(["up", "down", "left", "right"])
-            self.move_timer = random.randint(30, 90)
+            blockers = self._movement_blockers(player, enemies)
+            if not self.try_grid_move(self.dir, self.size, dungeon, blockers):
+                self.dir = random.choice(["up", "down", "left", "right"])
+                self.move_timer = random.randint(20, 60)
+                self.try_grid_move(self.dir, self.size, dungeon, blockers)
 
         fire_chance = BOSS_FIRE_CHANCE if self.is_boss else ENEMY_FIRE_CHANCE
         if random.random() < fire_chance and self.cooldown == 0:
@@ -116,14 +68,16 @@ class Enemy:
                 self.cooldown = ENEMY_SHOOT_COOLDOWN
 
     def draw(self, screen):
-        draw_y = self.y + ARENA_Y
+        draw_y = self.render_y + ARENA_Y
+        x = int(self.render_x)
+
         if self.original_image:
-            blit_tank(screen, self.original_image, self.x, draw_y, self.size, self.dir)
+            blit_tank(screen, self.original_image, self.render_x, draw_y, self.size, self.dir)
         else:
             body_color = BOSS_COLOR if self.is_boss else ENEMY_COLOR
-            pygame.draw.rect(screen, body_color, (self.x, draw_y, self.size, self.size))
+            pygame.draw.rect(screen, body_color, (x, draw_y, self.size, self.size))
 
         if self.is_boss:
             hp_ratio = max(0, self.hp) / BOSS_HP
-            pygame.draw.rect(screen, (50, 50, 50), (self.x, draw_y - 6, self.size, 4))
-            pygame.draw.rect(screen, (255, 50, 50), (self.x, draw_y - 6, self.size * hp_ratio, 4))
+            pygame.draw.rect(screen, (50, 50, 50), (x, draw_y - 6, self.size, 4))
+            pygame.draw.rect(screen, (255, 50, 50), (x, draw_y - 6, self.size * hp_ratio, 4))
