@@ -9,7 +9,6 @@ from settings import SOUNDS_DIR, sound_path, music_path
 
 
 class AudioManager:
-    """Менеджер звука: загружает файлы из assets/sounds/ и assets/music/."""
 
     SOUND_FILES = {
         "shoot": ("shoot", ("shoot.ogg", "shoot.wav", "выстрел.ogg", "выстрел.wav")),

@@ -63,7 +63,6 @@ class Player(GridGlideMovement):
                 break
 
     def _should_block_door_exit(self, dungeon, direction):
-        """Не даёт съехать с двери до срабатывания перехода."""
         passage = dungeon.get_passage_at(self.grid_col(), self.grid_row())
         if not passage:
             return False

@@ -9,7 +9,6 @@ from core.grid_movement import GridGlideMovement
 
 
 class Coin:
-    """Монетка, выпадающая из врагов."""
 
     _sprite = None
     _sprite_loaded = False

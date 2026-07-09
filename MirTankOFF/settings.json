@@ -1,6 +1,6 @@
 {
     "music": true,
-    "sounds": true,
-    "difficulty": "ЛЕГКАЯ",
+    "sounds": false,
+    "difficulty": "СЛОЖНАЯ",
     "fullscreen": false
 }

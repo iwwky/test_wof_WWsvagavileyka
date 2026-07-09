@@ -16,14 +16,10 @@ MUSIC_DIR = os.path.join(ASSETS_DIR, "music")
 
 
 def _normalize_name(name: str) -> str:
-    # macOS (Finder/APFS) часто сохраняет кириллицу в NFD-разложенной форме
-    # ("й" как "и" + отдельный значок), тогда как в коде она обычно в NFC.
-    # Внешне буквы неотличимы, но байтовое сравнение имён файлов проваливается.
     return unicodedata.normalize("NFC", name).casefold()
 
 
 def _resolve_in_dir(directory: str, filename: str) -> str:
-    """Найти файл в папке, устойчиво к регистру и юникод-нормализации имени."""
     direct = os.path.join(directory, filename)
     if os.path.exists(direct):
         return direct
@@ -40,28 +36,22 @@ def _resolve_in_dir(directory: str, filename: str) -> str:
 
 
 def asset_path(filename: str) -> str:
-    """Абсолютный путь к файлу в папке assets/."""
     return _resolve_in_dir(ASSETS_DIR, filename)
 
 
 def sound_path(filename: str) -> str:
-    """Абсолютный путь к звуковому файлу."""
     return _resolve_in_dir(SOUNDS_DIR, filename)
 
 
 def music_path(filename: str) -> str:
-    """Абсолютный путь к музыкальному файлу."""
     return _resolve_in_dir(MUSIC_DIR, filename)
 
 
 def font_path(filename: str) -> str:
-    """Абсолютный путь к шрифту."""
     return _resolve_in_dir(FONTS_DIR, filename)
 
 
-# ==========================================
-# 1. ЭКРАН (Battle City: арена 208×208, тайлы 16×16)
-# ==========================================
+
 
 TILE_SIZE = 16
 COLS = 13
@@ -78,9 +68,7 @@ FPS = 60
 GLIDE_PIXELS_PER_FRAME = 1.5
 DEFAULT_WINDOW_SCALE = 3
 
-# ==========================================
-# 2. ЦВЕТА
-# ==========================================
+
 
 BLACK = (12, 14, 22)
 WHITE = (240, 240, 245)
@@ -108,9 +96,7 @@ SHOP_BG_COLOR = (40, 35, 25)
 COIN_COLOR = (255, 215, 0)
 HEART_COLOR = (255, 50, 70)
 
-# ==========================================
-# 3. ИГРОВОЙ БАЛАНС
-# ==========================================
+
 
 PLAYER_MAX_HP = 3
 PLAYER_SPEED = 2
@@ -143,9 +129,7 @@ DIRECTION_ANGLES = {
     "right": 90,
 }
 
-# ==========================================
-# 4. ЭКОНОМИКА
-# ==========================================
+
 
 COIN_DROP_CHANCE = 0.55
 BOSS_COIN_DROP = 15
@@ -154,9 +138,7 @@ HEAL_COST = 5
 
 MAX_COINS = 999
 
-# ==========================================
-# 5. КАРТА
-# ==========================================
+
 
 TILE_EMPTY = 0
 TILE_OBSTACLE = 1
@@ -165,9 +147,7 @@ TILE_DOOR = 4
 TILE_SHOP = 5
 TILE_BUSH = 6
 
-# ==========================================
-# 6. СОСТОЯНИЯ ИГРЫ
-# ==========================================
+
 
 STATE_MENU = "MENU"
 STATE_PLAYING = "PLAYING"
@@ -175,9 +155,7 @@ STATE_GAME_OVER = "GAME_OVER"
 STATE_VICTORY = "VICTORY"
 STATE_CONFIRM_EXIT = "CONFIRM_EXIT"
 
-# ==========================================
-# 7. НАСТРОЙКИ ИГРЫ
-# ==========================================
+
 
 GAME_SETTINGS = {
     "music": True,
@@ -186,9 +164,7 @@ GAME_SETTINGS = {
     "fullscreen": False,
 }
 
-# ==========================================
-# 8. НАСТРОЙКИ СЛОЖНОСТИ
-# ==========================================
+
 
 DIFFICULTY_SETTINGS = {
     "ЛЕГКАЯ": {
@@ -227,7 +203,6 @@ DIFFICULTY_OPTIONS = ["ВСЕ", "ЛЕГКАЯ", "СРЕДНЯЯ", "СЛОЖНА�
 
 
 def get_difficulty_settings():
-    """Текущие параметры баланса для выбранной сложности."""
     return DIFFICULTY_SETTINGS.get(
         GAME_SETTINGS["difficulty"],
         DIFFICULTY_SETTINGS["СРЕДНЯЯ"],

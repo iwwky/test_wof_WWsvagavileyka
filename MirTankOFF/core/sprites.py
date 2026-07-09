@@ -8,7 +8,6 @@ def sprite_for_direction(image, direction):
 
 
 def blit_tank(screen, image, x, y, size, direction):
-    """Отрисовка танка по центру клетки."""
     rotated = sprite_for_direction(image, direction)
     rect = rotated.get_rect(center=(x + size // 2, y + size // 2))
     screen.blit(rotated, rect)

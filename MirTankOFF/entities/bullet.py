@@ -7,7 +7,6 @@ _bullet_sprites = {}
 
 
 def muzzle_position(x, y, size, direction):
-    """Точка выстрела у дула (спрайт по умолчанию смотрит вниз)."""
     cx = x + size // 2
     cy = y + size // 2
     offset = size // 2 + 2

@@ -3,6 +3,7 @@ import unittest
 from settings import (
     DIFFICULTY_SETTINGS,
     get_boss_hp,
+    get_boss_shoot_cooldown,
     get_difficulty_settings,
     get_enemy_hp,
     get_enemy_speed_mult,
@@ -41,13 +42,13 @@ class SettingsTests(unittest.TestCase):
 
     def test_difficulty_boss_hp(self):
         GAME_SETTINGS["difficulty"] = "ЛЕГКАЯ"
-        self.assertEqual(get_boss_hp(), 25)
+        self.assertEqual(get_boss_hp(), 15)
 
         GAME_SETTINGS["difficulty"] = "СРЕДНЯЯ"
-        self.assertEqual(get_boss_hp(), 35)
+        self.assertEqual(get_boss_hp(), 20)
 
         GAME_SETTINGS["difficulty"] = "СЛОЖНАЯ"
-        self.assertEqual(get_boss_hp(), 50)
+        self.assertEqual(get_boss_hp(), 25)
 
     def test_hard_enemy_speed_multiplier(self):
         GAME_SETTINGS["difficulty"] = "СЛОЖНАЯ"
@@ -62,6 +63,16 @@ class SettingsTests(unittest.TestCase):
 
         GAME_SETTINGS["difficulty"] = "СЛОЖНАЯ"
         self.assertEqual(get_heal_cost(), 8)
+
+    def test_boss_shoot_cooldown_depends_on_difficulty(self):
+        GAME_SETTINGS["difficulty"] = "ЛЕГКАЯ"
+        self.assertEqual(get_boss_shoot_cooldown(), 100)
+
+        GAME_SETTINGS["difficulty"] = "СРЕДНЯЯ"
+        self.assertEqual(get_boss_shoot_cooldown(), 70)
+
+        GAME_SETTINGS["difficulty"] = "СЛОЖНАЯ"
+        self.assertEqual(get_boss_shoot_cooldown(), 50)
 
     def test_get_difficulty_settings_fallback(self):
         GAME_SETTINGS["difficulty"] = "НЕИЗВЕСТНАЯ"

@@ -7,7 +7,6 @@ DOOR_ROWS = [ROWS // 2 - 1, ROWS // 2, ROWS // 2 + 1]
 
 
 def _place_doors(matrix, doors):
-    """Три центральных тайла на каждой стене — как в Battle City."""
     if "top" in doors:
         for c in DOOR_COLS:
             matrix[0][c] = TILE_DOOR
@@ -22,29 +21,18 @@ def _place_doors(matrix, doors):
             matrix[r][COLS - 1] = TILE_DOOR
 
 
-# ──────────────────────────────────────────────────────────────────
-# Авторские ASCII-карты комнат (перенос прототипов-картинок 1 в 1).
-# Легенда: '#' — стена (Стена.png), 'B' — кирпич/ящик (Кирпич.png),
-# '*' — куст, '.' — пол, 'D' — дверь (сама буква не важна: реальные
-# двери всё равно расставляет _place_doors по конфигу комнаты из
-# self.rooms, картинка лишь показывает, где стоит открытый проём),
-# 'C'/'С' — тайл сундука/магазина (TILE_SHOP; поддержаны и латиница,
-# и кириллица на случай, если карта набрана русской раскладкой).
-# ──────────────────────────────────────────────────────────────────
-
 TILE_FROM_CHAR = {
     "#": TILE_WALL,
     "B": TILE_OBSTACLE,
     "*": TILE_BUSH,
     ".": TILE_EMPTY,
-    "D": TILE_WALL,  # временно стена — будет перезаписано _place_doors
+    "D": TILE_WALL,
     "C": TILE_SHOP,
-    "С": TILE_SHOP,  # кириллическая "С" (U+0421) — визуально идентична латинской
+    "С": TILE_SHOP,
 }
 
 
 def _matrix_from_ascii(ascii_map):
-    """Строит матрицу тайлов напрямую из текстовой карты-прототипа."""
     matrix = [[TILE_EMPTY for _ in range(COLS)] for _ in range(ROWS)]
     for r, row_str in enumerate(ascii_map):
         for c, ch in enumerate(row_str):
@@ -68,7 +56,7 @@ SPAWN_ROOM_MAP = [
     "#############",
 ]
 
-# map_left.png → комната (-1, 0), левая арена.
+#левая
 ARENA_FORTRESS_MAP = [
     "#############",
     "#...B......B#",
@@ -85,7 +73,7 @@ ARENA_FORTRESS_MAP = [
     "#############",
 ]
 
-# map_right.png → комната (1, 0), правая арена.
+#правая
 ARENA_GARDEN_MAP = [
     "#####DDD#####",
     "#*..#...#.**#",
@@ -102,7 +90,7 @@ ARENA_GARDEN_MAP = [
     "#############",
 ]
 
-# map_top.png → комната (0, 1), верхняя арена.
+#верхняя
 ARENA_BRIDGE_MAP = [
     "#####DDD#####",
     "#.......#.B.#",
@@ -119,11 +107,6 @@ ARENA_BRIDGE_MAP = [
     "#####DDD#####",
 ]
 
-# map_chest.png → комната (1, 1), сундук/магазин.
-# Блок 'С' в левом верхнем углу — место сундука (TILE_SHOP).
-# Дверь слева ('D' в столбце 0) в картинке нарисована для красоты,
-# но по конфигу комнаты (doors=["bottom"]) реально откроется только низ —
-# так и должно быть, картинка не решает, где открыт проход.
 SHOP_ROOM_MAP = [
     "#############",
     "#СС.B......B#",
@@ -140,10 +123,6 @@ SHOP_ROOM_MAP = [
     "#####DDD#####",
 ]
 
-# map_boss.png → комната (0, 2), босс.
-# Картинки с ASCII не было — карта восстановлена по пиксельному анализу
-# самого изображения (16×16 px на тайл, 13×13 клеток). Кирпичей в этой
-# комнате нет — только стены, кусты и пара одиночных валунов-стен внутри.
 BOSS_ROOM_MAP = [
     "#############",
     "#***.....***#",
@@ -160,7 +139,6 @@ BOSS_ROOM_MAP = [
     "#############",
 ]
 
-# Прямое соответствие "позиция комнаты на карте" → её авторский ASCII-макет.
 ROOM_MAPS = {
     (0, 0): SPAWN_ROOM_MAP,
     (-1, 0): ARENA_FORTRESS_MAP,
@@ -234,7 +212,6 @@ class Dungeon:
         return True
 
     def get_passage_at(self, col, row):
-        """Направление прохода, если танк стоит на открытой двери."""
         if row == 0 and col in DOOR_COLS and self._is_door_passable(0, col):
             return "top"
         if row == ROWS - 1 and col in DOOR_COLS and self._is_door_passable(ROWS - 1, col):
@@ -253,7 +230,6 @@ class Dungeon:
         self.rooms[self.current_pos]["cleared"] = True
 
     def mark_shop_opened(self):
-        """Вызывается после успешной покупки — сундук визуально открывается насовсем."""
         self.rooms[self.current_pos]["shop_opened"] = True
 
     def get_shop_rects(self):
@@ -343,7 +319,6 @@ class Dungeon:
             self._draw_chest(screen, player)
 
     def _draw_chest(self, screen, player):
-        """Сундук вместо магазина: открывается насовсем после первой покупки."""
         shop_rects = self.get_shop_rects()
         if not shop_rects:
             return

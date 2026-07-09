@@ -1,5 +1,4 @@
 # core/grid_movement.py
-"""Логическая сетка + плавная интерполяция между клетками."""
 import pygame
 
 from settings import TILE_SIZE, GLIDE_PIXELS_PER_FRAME, WIDTH, ARENA_HEIGHT
@@ -27,7 +26,6 @@ class GridGlideMovement:
         return self.y // TILE_SIZE
 
     def teleport(self, x, y):
-        """Мгновенная установка позиции (переход через дверь)."""
         self.x = self._snap(x)
         self.y = self._snap(y)
         self.render_x = float(self.x)

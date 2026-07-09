@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-"""Сборка установщика игры через PyInstaller."""
 
 import shutil
 import subprocess
@@ -14,7 +13,7 @@ BUILD_DIR = ROOT / "build"
 
 def main():
     try:
-        import PyInstaller  # noqa: F401
+        import PyInstaller
     except ImportError:
         print("Устанавливаю PyInstaller...")
         subprocess.check_call([sys.executable, "-m", "pip", "install", "pyinstaller"])

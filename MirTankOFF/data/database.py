@@ -15,7 +15,6 @@ class Database:
         self.create_tables()
 
     def create_tables(self):
-        """Создание таблицы результатов."""
 
         self.cursor.execute("""
             CREATE TABLE IF NOT EXISTS results(
@@ -88,7 +87,6 @@ class Database:
         self.connection.commit()
 
     def get_statistics(self, difficulty=None):
-        """Общая статистика. difficulty=None — по всем играм."""
 
         query = """
             SELECT
@@ -135,7 +133,6 @@ class Database:
         }
 
     def get_score_history(self, difficulty=None, limit=8):
-        """Последние результаты для графика."""
 
         query = """
             SELECT score, victory, difficulty

@@ -12,8 +12,6 @@ from ui.interface import UI
 from data.database import Database
 from data.save_manager import load_settings, save_settings
 
-# Точки спавна врагов — совпадают с «безопасными зонами» dungeon.py,
-# где карта гарантированно не ставит стены/кирпичи/кусты.
 CORNER_ENEMY_SPAWNS = [
     (2 * TILE_SIZE, 2 * TILE_SIZE),
     ((COLS - 3) * TILE_SIZE, 2 * TILE_SIZE),
@@ -22,15 +20,12 @@ CORNER_ENEMY_SPAWNS = [
 ]
 CENTER_ENEMY_SPAWN = ((COLS // 2) * TILE_SIZE, (ROWS // 2) * TILE_SIZE)
 
-# 4 врага в «Крепости» и «Саду», 5 — в «Мосту» (последняя арена перед боссом).
 ARENA_ENEMY_SPAWNS = {
-    (-1, 0): CORNER_ENEMY_SPAWNS,  # Крепость
-    (1, 0): CORNER_ENEMY_SPAWNS,  # Сад
-    (0, 1): CORNER_ENEMY_SPAWNS + [CENTER_ENEMY_SPAWN],  # Мост
+    (-1, 0): CORNER_ENEMY_SPAWNS,
+    (1, 0): CORNER_ENEMY_SPAWNS,
+    (0, 1): CORNER_ENEMY_SPAWNS + [CENTER_ENEMY_SPAWN],
 }
 
-# 3 охранника сундука — сундук нельзя открыть и комнату нельзя покинуть,
-# пока все они не побеждены.
 SHOP_ENEMY_SPAWNS = CORNER_ENEMY_SPAWNS[:3]
 
 

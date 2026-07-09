@@ -43,7 +43,6 @@ class UI:
 
     @staticmethod
     def _load_optional_image(filename):
-        """Загрузить текстуру из assets/, вернуть None, если файла нет."""
         try:
             return pygame.image.load(asset_path(filename)).convert_alpha()
         except (FileNotFoundError, pygame.error):
@@ -51,7 +50,6 @@ class UI:
 
     @staticmethod
     def _make_empty_heart(full_heart):
-        """Затемнённый силуэт полного сердца — для пустых HP без второй текстуры."""
         empty = full_heart.copy()
         empty.fill((70, 70, 80, 255), special_flags=pygame.BLEND_RGBA_MULT)
         return empty
@@ -263,7 +261,6 @@ class UI:
             pygame.draw.rect(screen, color, (bar_x, bar_y, bar_width, bar_height), border_radius=2)
 
     def draw_hud(self, screen, player, dungeon):
-        """Верхняя панель: сердечки, монеты, очки, комната."""
         pygame.draw.rect(screen, UI_BG, (0, 0, WIDTH, UI_HEIGHT))
         pygame.draw.line(screen, UI_ACCENT, (0, UI_HEIGHT - 1), (WIDTH, UI_HEIGHT - 1), 2)
 
@@ -272,8 +269,6 @@ class UI:
             icon = self._heart_full if i < player.hp else self._heart_empty
             screen.blit(icon, (4 + i * heart_spacing, 4))
 
-        # Монеты и очки прижаты к правому краю, чтобы не наезжать на
-        # сердечки независимо от того, сколько максимум HP у игрока.
         score_text = self.font_sm.render(str(player.score), True, WHITE)
         score_x = WIDTH - 6 - score_text.get_width()
         screen.blit(score_text, (score_x, 8))
